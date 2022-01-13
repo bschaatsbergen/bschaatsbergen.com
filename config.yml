@@ -42,7 +42,6 @@ outputs:
 
 params:
     env: production # to enable google analytics, opengraph, twitter-cards and schema.
-    description: "Theme PaperMod - https://github.com/adityatelange/hugo-PaperMod"
     # author: ["Me", "You"] # multiple authors
 
     defaultTheme: auto
@@ -56,11 +55,11 @@ params:
     ShowCodeCopyButtons: true
     ShowToc: true
     # comments: false
-    images: ["papermod-cover.png"]
+    images: ["my-cover.png"]
 
     profileMode:
         enabled: false
-        title: PaperMod
+        title: bschaatsbergen
         imageUrl: "#"
         imageTitle: my image
         # imageWidth: 120
@@ -72,7 +71,7 @@ params:
               url: tags
 
     homeInfoParams:
-        Title: "Code is a liability, not an asset"
+        Title: "Code is a liability"
         Content: >
             Bruno Schaatsbergen on architecture and development in the cloud.
 
@@ -87,7 +86,7 @@ params:
           url: "index.xml"
 
     editPost:
-        URL: "https://github.com/bschaatsbergen/bschaatsbergen.com/tree/content"
+        URL: "https://github.com/bschaatsbergen/bschaatsbergen.com/tree/main/content"
         Text: "Suggest Changes" # edit text
         appendFilePath: true # to append file path to Edit link
 
