@@ -2,6 +2,7 @@
 title: "Agile Shower Thoughts"
 date: 2021-10-03T14:29:15+01:00
 tags: ["Agile"]
+description: There's this ever growing need for speed mentality within software development. Everything needs to happen faster, but be aware of the risks. I jotted down some of my shower-thoughts to help you achieve speed.
 ---
 
 Right of the bat I want to point out that this article isn't directly applicable to start-ups, where things have to be built from the ground up. But where there is steadiness and stability, a mindset that prioritizes shipping features with urgency can cause a lot of problems down the road. I think that software delivery is preferably a 3 step process that does not involve rushing features to market. Lets talk about that, and how we can iterate faster and be more efficient. This article is a tribute to a colleague that's unfortunately leaving my team, we carefully maintained a synergy, when it came to delivering software, we had it our way and it worked out great.

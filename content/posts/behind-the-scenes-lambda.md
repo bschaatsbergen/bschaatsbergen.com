@@ -1,7 +1,8 @@
 ---
-title: "Behind the scenes, AWS Lambda"
+title: "Behind the scenes, Lambda"
 date: 2021-06-08T12:19:55+01:00
 tags: ["AWS", "Lambda", "Serverless"]
+description: What's better than containerization? Written in Rust, open source and the core of how AWS Lambda functions are powered, Firecracker!
 ---
 
 Writing code and deploying it to AWS Lambda is as easy as baking a cake (depending on the type of cake). Lambda performs the heavy lifting for you, from provisioning to scaling. But where is the magic happening and how does it actually work under the hood? Lets find out together!
