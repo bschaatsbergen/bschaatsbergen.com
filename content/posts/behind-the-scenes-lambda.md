@@ -1,7 +1,6 @@
 ---
 title: "Behind the scenes, AWS Lambda"
 date: 2021-06-08T12:19:55+01:00
-draft: true
 tags: ["AWS", "Lambda", "Serverless"]
 ---
 
@@ -65,7 +64,6 @@ How are stream sources like Kinesis or DynamoDB processed? When an application p
 
 ![Stream Lambda Invocation Repeat](/stream-invoke-lambda-repeat.png)
 
-
 ## Firecracker
 
 Firecracker is AWS their open source virtual machine monitor which you can find on Github. Firecracker is responsible for providing the isolation between Lambda functions that run on top of the EC2 Nitro hardware we spoke about earlier. Think of each Lambda function having it's own server, sounds wasteful right? Placing multiple workloads on the same server in each their own isolated environment sounds more efficient. As modern servers have over TBs of memory and hundreds of cores, AWS decided to cut these servers up through virtualization.
@@ -87,3 +85,15 @@ As we mentioned earlier, every function is driven by its own Firecracker process
 An interesting footnote to this section is that all vCPU threads are considered to run malicious code when they start. These vCPU threads are contained by trusted execution environments which are ordered from guest vCPU threads to host vCPU threads. Firecracker is wrapped in the jailer binary. The jailer binary initializes resources that require permissions and then executes into the Firecracker binary which is then ran as an unpriviliged process so it can only access specific resources.
 
 Firecracker provides a REST API to manage MVMs, if you would like to take a look at the OpenAPI format click [here](https://github.com/firecracker-microvm/firecracker/blob/main/src/api_server/swagger/firecracker.yaml).
+
+# Footnotes
+
+- I often refer to 'sandbox' which is the isolated environment created by the KVM, also referred to as MVM.
+
+- The Firecracker [paper](https://www.usenix.org/system/files/nsdi20-paper-agache.pdf) is worth reading, this was very useful during my research phase.
+
+- I've used both [SRV409-R1](https://www.youtube.com/watch?v=QdzV04T_kec) and [SVS405-R1](https://www.youtube.com/watch?v=xmacMfbrG28) as a reference to write this article.
+
+- Marc Brooker (Lead at the AWS Lambda team) his [article](https://brooker.co.za/blog/2020/02/19/firecracker.html) on Firecracker was a very interesting read.
+
+- [Lambda Executions](https://docs.aws.amazon.com/whitepapers/latest/security-overview-aws-lambda/lambda-executions.html) under the Security Overview of AWS Lambda within the AWS Whitepaper section had some well detailed explanations.
