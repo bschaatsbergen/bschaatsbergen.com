@@ -63,7 +63,7 @@ The crux in object storage architecture is designed on purpose to support and op
 
 Fyi, 'in the real world' persisting a specific object to disk isn't just to a single storage node. It might be that the layer where the router lives slices the object and distributes individual slices of data over multiple storage nodes, which again also replicates the slices of data to other storage nodes (just for the sake of durability of the object).
 
-Anyways, after this short introduction to object storage in the cloud I think that we can both agree that a user could never reach the limit of objects stored in a Amazon S3 bucket. In the end you're just competing with AWS and they for sure have enough space laying around.
+Anyways, after this short introduction to object storage in the cloud I think that we can both agree that a user could never reach the limit of objects stored in a Amazon S3 bucket. One thing is for sure, you can't compete with cloud providers.
 
 # Footnotes
 
