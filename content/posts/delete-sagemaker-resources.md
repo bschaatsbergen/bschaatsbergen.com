@@ -83,13 +83,17 @@ def paginate(method, **kwargs):
     for page in paginator.paginate(
         CreationTimeBefore=deletion_date,
         SortOrder="Ascending",
-        PaginationConfig={  # Tweak this, you might run into a rate limiter.
-            "MaxItems": 200, 
-            "PageSize": 50,
-        },
     ).result_key_iters():
         for result in page:
             yield result
 ```
 
+If you run into rate limit issues you can pass a `PaginationConfig` to the paginator (be sure to tweak it to your needs):
+
+```python
+PaginationConfig={
+    "MaxItems": 100, 
+    "PageSize": 50,
+},
+```
 As mentioned earlier, if you want to delete model package groups or pipelines you can easily do so by tweaking the above code.
