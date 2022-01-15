@@ -69,7 +69,7 @@ You’ll run out of money before they run out of space.
 
 # Footnotes
 
-- If you plan to dive into object storage I would recommend reading up on [Colossus](https://cloud.google.com/blog/products/storage-data-transfer/a-peek-behind-colossus-googles-file-system)
+- If you plan to dive into object storage I would recommend reading up on [Colossus](https://cloud.google.com/blog/products/storage-data-transfer/a-peek-behind-colossus-googles-file-system) it backs Cloud Storage and Firestore on Google Cloud.
     - [Colossus paper](https://static.googleusercontent.com/media/research.google.com/nl//archive/gfs-sosp2003.pdf)
 
 - Unfortunately AWS is not open about the internals of S3, but I can tell you for sure that it looks a lot like how DynamoDB is designed.
