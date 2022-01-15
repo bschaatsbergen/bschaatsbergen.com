@@ -1,5 +1,5 @@
 ---
-title: "You’ll run out of money before they run out of space."
+title: "You’ll run out of money before they run out of space"
 date: 2022-01-15T10:59:15+00:00
 tags: ["Object Storage", "System Design", "Distributed Systems"]
 ---
