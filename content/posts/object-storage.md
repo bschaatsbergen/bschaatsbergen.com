@@ -11,12 +11,6 @@ In this article I aim to shed a bit of light on object storage architecture (ver
 
 # What is object storage?
 
-In the world of data storage there's 3 ways of storing your data:
-
-- Block based (think of EBS or Azure Virtual Disks)
-- File based (EFS, Filestore)
-- Object based (S3, Cloud Storage)
-
 Object storage systems, put data into objects, discrete ‘containers’ that each have a unique identifier, called an object ID (OID). Every object is also associated with metadata.
 
 Object storage does not use folders, directories or complex hierarchies. The object itself is useless without the metadata, the metadata is describing important details such as permissions, type of encryption, contingencies, and other information. As every piece of data together with its metadata becomes a so called self-contained 'object' we can store it anywhere and retrieve it from anywhere.
