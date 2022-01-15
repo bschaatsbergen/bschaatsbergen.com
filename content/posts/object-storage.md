@@ -22,12 +22,11 @@ Object storage systems, put data into objects, discrete ‘containers’ that ea
 Object storage does not use folders, directories or complex hierarchies. The object itself is useless without the metadata, the metadata is describing important details such as permissions, type of encryption, contingencies, and other information. As every piece of data together with its metadata becomes a so called self-contained 'object' we can store it anywhere and retrieve it from anywhere.
 
 The most common object storage architectures contain 2 main components: routers and storage nodes.
+You can think of a application and storage layer, where the router is part of the application layer and the storage nodes are part of the storage layer. The application layer contains logic to handle the read/write requests to the storage layer, but it also manages permissions, etc. Throughout this article the router should be seen as part of the application layer.
 
 ![Storage Router and Nodes](/storage-route-and-nodes.png)
 
-You might've already guessed, the router does the heavy lifting. As a object storage user you interact with the router.
-
-The object store exposes a REST based interface to communicate with. Lets take AWS S3 its `PutObject` request for example.
+As a object storage user you interact with the router. The object store exposes a REST based interface to communicate with. Lets take AWS S3 its `PutObject` request for example.
 
 ```bash
 PUT /gizmo.jpg HTTP/1.1
