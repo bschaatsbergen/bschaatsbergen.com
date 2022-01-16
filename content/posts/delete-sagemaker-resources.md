@@ -4,7 +4,7 @@ date: 2022-01-15T10:10:15+00:00
 tags: ["AWS", "Machine Learning"]
 ---
 
-Sometime ago I joined a large scale enterprise project where there were hundreds of SageMaker resources created per day (think of models, pipelines, etc). As nothing was being deleted, searching for a specific resource quickly turned into a tedious thing to do.
+Sometime ago I was working on a large scale enterprise project where there were hundreds of SageMaker resources created per day (think of models, pipelines, etc). As nothing was being deleted, searching for a specific resource quickly turned into a tedious thing to do.
 
 After running into this problem several times a day it became essential that we sould tidy up. We decided to create a Lambda function that takes care of deleting the SageMaker models using boto3, invoked through a scheduled EventBridge rule. It's pretty straight forward, see below.
 
