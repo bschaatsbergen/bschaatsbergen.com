@@ -1,8 +1,9 @@
----
+<!-- ---
 title: "Delete old SageMaker resources"
 date: 2022-01-15T10:10:15+00:00
 tags: ["AWS", "Machine Learning"]
----
+draft: true
+--- -->
 
 Sometime ago I was working on a large scale enterprise project where there were hundreds of SageMaker resources created per day (think of models, pipelines, etc). As nothing was being deleted, searching for a specific resource quickly turned into a tedious thing to do.
 
