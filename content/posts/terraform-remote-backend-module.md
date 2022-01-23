@@ -11,6 +11,9 @@ Everytime I have to setup a remote backend in AWS I end up getting slightly more
 
 After fiddling around a bit I managed to put the module together quite fast. Most of my time went to thinking of how I could keep every user happy.
 
+[github.com/binxio/terraform-aws-remote-state-module](https://github.com/binxio/terraform-aws-remote-state-module).
+
+
 ## Features
 
 - S3 cross-region replication
