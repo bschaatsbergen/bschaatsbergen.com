@@ -68,7 +68,7 @@ provider "aws" {
 }
 ```
 
-Again, to avoid added complexity of working with the KMS key ID we'll also create KMS key alias for the multi-region replica key.
+Again, to avoid added complexity of working with the KMS key ID we'll also create a KMS key alias for the multi-region replica key.
 
 ```terraform
 resource "aws_kms_alias" "euw1_sm" {
