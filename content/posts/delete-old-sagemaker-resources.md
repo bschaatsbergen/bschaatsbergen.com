@@ -2,6 +2,7 @@
 title: "Delete old SageMaker resources"
 date: 2022-01-15T10:10:15+00:00
 tags: ["AWS", "Machine Learning"]
+draft: true
 ---
 
 Imagine creating hundreds of SageMaker resources a day (models, pipelines, etc). You'll quickly end up with a very polluted environment where searching for a specific resource quickly turns into a tedious thing to do.
