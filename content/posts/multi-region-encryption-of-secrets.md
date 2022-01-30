@@ -2,7 +2,6 @@
 title: "Global KMS keys and secrets in AWS"
 date: 2022-01-23T12:19:55+01:00
 tags: ["Terraform", "AWS"]
-draft: true
 description: "Lets take a look at managing our KMS keys and secrets across multiple regions with Terraform."
 ---
 
