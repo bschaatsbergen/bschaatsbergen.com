@@ -71,7 +71,7 @@ params:
               url: tags
 
     homeInfoParams:
-        Title: "Code is a liability"
+        Title: "Optimize for joy"
         Content: >
             Bruno Schaatsbergen on architecture and development in the cloud.
 
