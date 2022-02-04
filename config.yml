@@ -71,7 +71,7 @@ params:
               url: tags
 
     homeInfoParams:
-        Title: "Optimize for joy"
+        Title: "Minimize waste and optimize for joy"
         Content: >
             Bruno Schaatsbergen on architecture and development in the cloud.
 
