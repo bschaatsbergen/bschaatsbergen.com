@@ -5,39 +5,36 @@ tags: ["Terraform", "AWS"]
 draft: true
 description: "Lets take a look at managing our KMS keys and secrets across multiple regions with Terraform."
 ---
-
-I absolutely love encryption and secret management in AWS. Don't get me wrong, it does deserve some love here and there but it's coming together quite well.
-
-In this post I want to give you a brief introduction on how to manage KMS keys and secrets in Secret Manager globally.
+In this post I want to give you a brief introduction on how to deploy KMS keys and secrets in Secret Manager across multiple regions. We'll do so by making use of replication to minimize waste and prevent repeating ourselves.
 
 ## Multi-region KMS key
 
-July last year AWS introduced multi-region keys. A new capability that lets you replicate keys from one region into another. With multi-region keys, you can more easily move encrypted data between regions without having to decrypt and re-encrypt with different keys in each region.
+July last year AWS introduced [multi-region KMS keys](https://docs.aws.amazon.com/kms/latest/developerguide/multi-region-keys-overview.html). A new capability that lets you replicate keys from one region into another. With multi-region keys, you can more easily move encrypted data between regions without having to decrypt and re-encrypt with different keys in each region.
 
-To create a multi-region KMS key in Terraform we simply set `multi_region` to `true` in our `aws_kms_key` resource.
+To create a multi-region KMS key in Terraform we simply set `multi_region` to `true` in the `aws_kms_key` resource.
 
-```terraform
-resource "aws_kms_key" "main_sm" {
+```hcl
+resource "aws_kms_key" "mrk" {
   description         = "Multi-region key for Secrets Manager"
   enable_key_rotation = true
   multi_region        = true
 }
 ```
 
-We'll also create an alias for our KMS key to reduce the added complexity of working with the KMS key ID.
+We'll also create an alias for our multi-region KMS key to reduce the added complexity of working with the KMS key ID itself.
 
-```terraform
-data "aws_region" "main" {}
+```hcl
+data "aws_region" "current" {}
 
-resource "aws_kms_alias" "main_sm" {
+resource "aws_kms_alias" "mrk_alias" {
   name          = "alias/${data.aws_region.main.name}-secrets-manager"
-  target_key_id = aws_kms_key.main_sm.key_id
+  target_key_id = aws_kms_key.mrk.key_id
 }
 ```
 
-I've interpolated the `name` with the name of the region we pointed our `aws` provider to. I usually do so to achieve a bit of consistency in the name of my cross-region resources.
+I've interpolated the `name` with the name of the region we pointed our `aws` provider to. I usually do so to achieve a bit of consistency in the naming of my cross-region resources.
 
-Now that we have the multi-regional KMS key and KMS key alias deployed in eu-central-1 it's time to create a replica key.
+Now that we have the multi-regional KMS key and KMS key alias deployed in eu-central-1 it's time to create a multi-region replica KMS key.
 
 ## Multi-region replica KMS key
 
@@ -47,10 +44,10 @@ A replica key is a fully functional KMS key with it own key policy, grants, alia
 
 To create a multi-region replica key we use the `aws_kms_replica_key` resource. We simply point to our parent KMS key that we created earlier and pass a different provider to the resource.
 
-```terraform
-resource "aws_kms_replica_key" "euw1_sm" {
+```hcl
+resource "aws_kms_replica_key" "euw1_mrk" {
   description = "Multi-region replica key for Secrets Manager in eu-west-1"
-  primary_key_arn = aws_kms_key.multi_region_sm.arn
+  primary_key_arn = aws_kms_key.mrk.arn
 
   provider = aws.replica
 }
@@ -58,7 +55,7 @@ resource "aws_kms_replica_key" "euw1_sm" {
 
 > Please note the `provider = aws.replica`, it's a second provider I configured in my `provider.tf` that uses an `alias` to point to a different region.
 
-```terraform
+```hcl
 provider "aws" {
   region = "eu-central-1"
 }
@@ -69,31 +66,32 @@ provider "aws" {
 }
 ```
 
-Again, to avoid added complexity of working with the KMS key ID we'll also create a KMS key alias for the multi-region replica key.
+Again, to avoid any added complexity of working with the KMS key ID itself, we'll also create a KMS key alias for the multi-region replica key.
 
-```terraform
-resource "aws_kms_alias" "euw1_sm" {
+```hcl
+resource "aws_kms_alias" "euw1_mrk_alias" {
   name          = "alias/${data.aws_region.replica.name}-secrets-manager"
-  target_key_id = aws_kms_replica_key.euw1_sm.key_id
+  target_key_id = aws_kms_replica_key.euw1_mrk.key_id
 
   provider = aws.replica
 }
 ```
 
-Now plan and apply, you'll see that the same KMS key ID is in both regions but with a different alias: `eu-central-1-secrets-manager` and `eu-west-1-secrets-manager`.
+Run `terraform plan` - `apply` and you will see that the same KMS key ID is the same in
+both the regions.
 
 ## Create a Secret
 
-Now that both the multi-region KMS keys are deployed we can start using them/ Lets create a example secret to test the cross-region KMS decryption.
+Great, now that both the multi-region KMS keys are available in their respective regions it's time to play around with it. I'll create a example secret to test the KMS decryption in both regions using that same KMS key ID.
 
-```terraform
+```hcl
 resource "aws_secretsmanager_secret" "example" {
   name = "name-of-secret-string"
 
-  kms_key_id = aws_kms_key.main_sm.id
+  kms_key_id = aws_kms_key.mrk.id
 
   replica {
-    kms_key_id = aws_kms_key.euw1_sm.id
+    kms_key_id = aws_kms_key.euw1_mrk.id
     region     = data.aws_region.replica.name
   }
 }
@@ -104,33 +102,28 @@ resource "aws_secretsmanager_secret_version" "example" {
 }
 ```
 
-Also plan and apply this. Lets validate if the replication was successful, we should see the same secret `Name` and `KmsKeyId` in the output.
+Also `terraform plan` - `apply` this. To validate if the secret replication was successful, the secret should have a similar `Name` and `KmsKeyId` in the output.
 
-```sh
+```bash
 bruno ~> aws secretsmanager list-secrets --region eu-central-1 | jq '.SecretList[] | .Name, .KmsKeyId'
 "name-of-secret-string"
 "mrk-4c5359f5ab511673b6471d1df3bf3182"
 ```
 
-```sh
+```bash
 bruno ~> aws secretsmanager list-secrets --region eu-west-1 | jq '.SecretList[] | .Name, .KmsKeyId'
 "name-of-secret-string"
 "mrk-4c5359f5ab511673b6471d1df3bf3182"
 ```
 
-Great the secret is replicated and uses the same KMS key ID.
-> As mentioned earlier, the multi-region replica KMS key ID is similar to its parent KMS key ID.
-
-
 ## Decrypt the secret
 
-Time to decrypt our replicated secret with our multi-region replica key.
+I created a managed IAM policy that contains a statement which allows me to decrypt the KMS key by its ID.  You could add this managed policy to the role assumed by the workload ran in your primary and secondary region, that will allow you to retrieve the secret from Secrets manager.
 
-> Note, I granted my principal access to call `Decrypt` through the KMS key policy.
 
 ```bash
 bruno ~> aws secretsmanager get-secret-value --secret-id arn:aws:secretsmanager:eu-west-1:123456789101:secret:name-of-secret-string-vWenRf  --region eu-west-1 | jq .SecretString
 "actual-secret-string"
 ```
 
-Nice that works. We've now covered how you can create multi-region KMS keys and use the key across different regions. Secrets in Secrets Manager are just one of the many supported services out there, you can do the same with EBS, S3, CloudWatch logs, etc.
+To quickly wrap this up, we've covered how you can create multi-region KMS keys and use the multi-region replica KMS key in a different region without managing multiple completely isolated resources across regions. Please note that secrets in Secrets Manager are just one of the many services that can be managed by KMS, I would advice you to fiddle around with multi-region KMS keys in any cross-region architecture.
