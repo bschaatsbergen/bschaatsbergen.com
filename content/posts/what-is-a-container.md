@@ -42,6 +42,9 @@ The Mount namespace virtually partitions the file system so that processes runni
 The **Process** or pid. namespace.
 In Linux processes follow a branch, a so called process tree, every PID in the tree refers to an active process. The process namespace cuts off a branch of the process tree, and doesn’t allow access further up the process branch. This is essential because if a process is priviliged to inspect or may even be able to kill other processes we would have a problem. The process that does this remains in the parent namespace, in the original process tree, but makes the child the root of its own process tree.
 
+
+![Parent child PID NSpace](/parent-child-pid-nspace.png)
+
  4 is the PID in the parent process tree and 1 is the PID in the new child process tree.
 With PID namespace isolation, processes in the child namespace have no way of knowing of the parent processes its existence. However, processes in the parent namespace have a complete view of processes in the child namespace, as if they were any other process in the parent namespace. The PID namespace prevents the process from seeing or interacting with other processes.
 
