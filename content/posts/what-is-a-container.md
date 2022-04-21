@@ -4,7 +4,7 @@ date: 2022-04-21T20:42:12+01:00
 tags: ["containers"]
 ---
 
-In this article we'll discover the container paradigm, what containers are made up of and why they are great. Join me for a dive on some of the most important Linux kernel features that allow us to create 'containers'.
+In this article I want to provide you with a simple abstract to discover the  container paradigm. What are containers, how they are made and why they are great. 
 
 The first time I heard about 'containers' I thought that containers were very small sized stripped down nodes. Well, I can tell you that's definitely not the case.
 
@@ -136,9 +136,9 @@ So many possible ways of restricting our memory usage, lets try to see what the 
 9223372036854771712
 ```
 
-This looks like the highest positive signed 64-bit integer (263-1) rounded down to multiples of 4096 (212), but why? After some digging in the Linux Kernel I found that the [value is set to the default](https://github.com/torvalds/linux/blob/master/mm/memcontrol.c#L3125) PAGE_COUNTER_MAX and it's multiplied by PAGE_SIZE [when reading the value](https://github.com/torvalds/linux/blob/master/mm/memcontrol.c#L2730) . It's not the exact number of possible memory in bytes as it's rounded down to where the last bytes drop off.
+This looks like the highest positive signed 64-bit integer (263-1) rounded down to multiples of 4096 (212), but why? After some digging in the Linux Kernel I found that the [value is set to the default](https://github.com/torvalds/linux/blob/master/mm/memcontrol.c#L3946) PAGE_COUNTER_MAX and it's multiplied by PAGE_SIZE [when reading the value](https://github.com/torvalds/linux/blob/master/mm/memcontrol.c#L3952) . It's not the exact number of possible memory in bytes as it's rounded down to where the last bytes drop off.
 
-This number is the maximum for holding a number in binary in a memory store and apparently it's the default value for our memorygroup it's memory.kmem.limit_in_bytes property.
+This number is the maximum for holding a number in binary in a memory store and apparently it's the default value for the memorygroup its `limit_in_bytes` property.
 
 Lets try to alter the value and lower it to 5 megabytes, I rather be on the safe side with our container.
 
@@ -154,11 +154,11 @@ Time to use the cgroup, we can use cgexec to run a task in a given cgroup. Lets 
 [ec2-user@]$ sudo cgexec -g memory:mymemgroup bash
 ```
 
-Obviously we want to test the behaviour of the cgroup if we exceed a certain amount of memory allocation, in our case 5 megabytes. I think that 'yum get update' uses a bit more to initiate this process.
+We now want to test the behaviour of our cgroup and see how it responds to exceeding the allocated memory, 5 megabytes. I think that 'yum get update' uses a bit more to initiate this process.
 
 'Killed'! It looks like the OOM ("Out of Memory") Killer terminated the process and did its job correctly, thanks OOM Killer.
 
-The OOM Killer is daemon that is called by the Linux kernel if the system is critically low on memory or when a process is trying to bypass a memory limit. The OOM Killer has many more features than the ones I just explained, I recommend to read upon it.
+The OOM Killer is daemon that is called by the Linux kernel if the system is critically low on memory or when a process is trying to bypass a memory limit. Actually, this daemon has many more features than the ones I just explained, I recommend to read upon it.
 
 ```bash
 [root@ec2-user]# sudo yum get update
@@ -169,21 +169,21 @@ It seems like we did a good job! We created an isolated environment and limited 
 
 ## We have half a 'container' now, I think?
 
-Now that you have half a container you're probably already thinking on how to automate it, run it on top of a machine and have something really cool because it's lightweight and everything is isolated! That's what Docker did, and docker has lots of containerization experts. I would advice you to not try and reinvent the wheel. Playing around with these Linux kernel features is great to get a good grasp on containerization, but that's it (for me). Of course Docker has much more advanced features, but the building blocks are more or less these Linux kernel primitives. If you would like to dive more into this subject, I recommend reading the footnotes at the end of this article.
+That's right. I was sitting at the edge of my seat when fiddling around with this, though I quickly had to remind myself that I'm no container expert and that I shouldn't try to reinvent the wheel, ever. There's a wide range of tools like Docker and lower level container clients that you can play around with to create containers. Playing around with these Linux kernel features is great to get a good grasp on containerization, but that's it (for me).  If you would like to dive more into this subject, I recommend reading the footnotes at the end of this article.
 
 ## Containers and microservices
 
-Containers are best used in a microservice architecture, as each service is independent and loosely-coupled to serve its own responsibility as a service proxy, we can easily assign one container to one microservice and measure by this rule. As containers are easy to spin up, it becomes easy to scale-out. Microservices will be able to scale independent from each other. Data can be decentralized as there is no need to maintain the same type of database in every microservice. One might use a document store such as Elasticsearch while another one uses a simple key-store database such as Redis.
+Containers are best used in a microservice architecture, as each service is independent and loosely-coupled to serve its own responsibility as a service proxy, we can easily assign one container to one microservice and measure by this rule. As containers are easy to spin up it becomes easy to scale-out. Microservices scale independent from each other and data can be decentralized as there is no need to maintain the same type of database behind every microservice. One microservice might use a document store such as Elasticsearch while another one uses a database such as Redis. I would recommend to read upon how containers and microservices go hand in hand very well as I'm just providing you with a simple abstract.
 
-Every microservice requires lifecycle management and task management such as: load balancing, scaling policies, routing, health monitoring and security policies. There's some great tools out there such as Kubernetes to orchestrate your containers.
+Now that you have microservices you're required to implement lifecycle and task management such as: load balancing, scaling policies, routing, health monitoring and security policies. There's some great tools out there such as Google Cloud Run, AWS Fargate and Kubernetes  to orchestrate your container workload.
 
-Lets take a local supermarket as an example. The supermarket is split up in 3 logical independent components (microservices).
+Lets take our local supermarket as an example. This supermarket is split up in 3 logical independent components (microservices).
 
 - A payment gateway API that is the cash register counter.
 - An inventory API that keeps track of the items in the store.
 - A database that acts as our supplier.
 
-If we suddenly get a burst of payment gateway requests it would be illogical to open up an entire new store, because why would we want to scale out both our inventory API and database if there was no additional load? We rather add another 2 cash register counters, and quick! If one of the employees at the cash register counter would feel unwell due to all the busyness, we would lose a 'container'. In this case tools like Kubernetes would add a new cash register counter to the store and assign a healthy employee to stand behind it.
+If we suddenly get a burst of payment gateway requests it would be illogical to open up an entire new store, because why would we want to scale out both our inventory API and database if there was no additional load? We rather add another 2 cash register counters, and quick! If one of the employees at the cash register counter would feel unwell due to all the busyness, we would lose a 'container'. In this case systems like AWS Fargate  would add a new cash register counter to the store and assign a healthy employee to stand behind it.
 
 Bottomline, containers allow for flexibility and portability. Engineers should be able to ship a container to any environment without having to worry about the content (code, runtime, dependencies and configuration) of the container.
 
@@ -192,7 +192,3 @@ Bottomline, containers allow for flexibility and portability. Engineers should b
 - Redhat provides some great information on [namespaces](https://www.redhat.com/sysadmin/7-linux-namespaces), [building containers by hand](https://www.redhat.com/sysadmin/pid-namespace) and [seccomp](https://www.redhat.com/sysadmin/7-linux-namespaces), this was very useful.
 - Most of my research was done by reading the [man pages](https://man7.org/linux/man-pages/man7/namespaces.7.html).
 - IBM their spectrum symphony contains a very [detailed cgroup explanation](https://www.ibm.com/docs/en/spectrum-symphony/7.3.0?topic=limits-control-groups-cgroups-limiting-resource-usage-linux), I recommend reading this.
-
-
-
-
