@@ -4,7 +4,7 @@ date: 2022-04-21T20:42:12+01:00
 tags: ["containers"]
 ---
 
-In this article I want to provide you with a simple abstract to discover the  container paradigm. What are containers, how they are made and why they are great. 
+In this article I want to provide you with a simple abstract in order for you to discover the container paradigm yourself. We'll try to answer questions like: what are containers, how are they made and why are they great? 
 
 The first time I heard about 'containers' I thought that containers were very small sized stripped down nodes. Well, I can tell you that's definitely not the case.
 
