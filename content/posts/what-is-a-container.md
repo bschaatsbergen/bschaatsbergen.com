@@ -8,7 +8,7 @@ In this article I want to provide you with a simple abstract in order for you to
 
 The first time I heard about 'containers' I thought that containers were very small sized stripped down nodes. Well, I can tell you that's definitely not the case.
 
-First things first, containers are not VMs. Containers provide a way to virtualize an operating-system so that multiple workloads run on top of a single operating-system (in a sense that the same kernel is shared among the containers). VMs virtualize the hardware so that every VM has it's own isolated instance of an operating-system (by using a hypervisor). This might be hard to grasp when you start learning about containerization and seems abstract, but I'll try my best to form a clear understanding of containerization for you.
+First things first, containers are not VMs. Containers provide a way to virtualize an operating-system so that multiple workloads run on top of a single operating-system (in a sense that the same kernel is shared among the containers). VMs virtualize the hardware so that every VM has it's own isolated instance of an operating-system (by using a hypervisor). This might be hard to grasp when you start learning about containerization and seems vague,  but I'll try my best to clear things up along the way..
 
 ## The container metaphor
 
@@ -34,7 +34,7 @@ But how do you use these kernel features and what makes it so that we can ensure
 
 ### Namespaces
 
-Namespaces are one of the building blocks of isolation, they perform the isolation at a kernel level. Similar to how chroot works, which jails the process in a different root directory, namespaces separate other aspects of the system. It's an integral part of the architecture of tools like Docker. Namespaces were added in the 2.6.24 Linux kernel release back in 2008 (it's good to note that there are several types of namespaces added to the kernel, not all of them were added in this release).
+Namespaces are one of the building blocks of isolation, they perform the isolation at a kernel level. Similar to how chroot works, which jails the process in a different root directory, namespaces separate other aspects of the system. It's an integral part of the architecture of tools like Docker. Namespaces were added in the [2.6.24 Linux kernel release](https://kernelnewbies.org/Linux_2_6_24) back in 2008 (it's good to note that there are several types of namespaces added to the kernel, not all of them were added in this release).
 
 The **Mount** or mnt. namespace.
 The Mount namespace virtually partitions the file system so that processes running in a mount namespace cannot access file outside of their mount point.
@@ -42,8 +42,7 @@ The Mount namespace virtually partitions the file system so that processes runni
 The **Process** or pid. namespace.
 In Linux processes follow a branch, a so called process tree, every PID in the tree refers to an active process. The process namespace cuts off a branch of the process tree, and doesn’t allow access further up the process branch. This is essential because if a process is priviliged to inspect or may even be able to kill other processes we would have a problem. The process that does this remains in the parent namespace, in the original process tree, but makes the child the root of its own process tree.
 
-
-![Parent child PID NSpace](/parent-child-pid-nspace.png)
+![](https://binx.io/wp-content/uploads/2022/04/parent-child-pid-nspace-900x466.png)
 
  4 is the PID in the parent process tree and 1 is the PID in the new child process tree.
 With PID namespace isolation, processes in the child namespace have no way of knowing of the parent processes its existence. However, processes in the parent namespace have a complete view of processes in the child namespace, as if they were any other process in the parent namespace. The PID namespace prevents the process from seeing or interacting with other processes.
@@ -58,7 +57,7 @@ To have incoming and outgoing traffic we must be able to communicate from the pa
 We now know the theory behind system isolation at the kernel level, but what if we also wanted to restrict certain resource usages of this isolated component? This is where control groups come in handy. Lets say that I want this specific apartment to not use more electricity than 0,8702 kWh when someone is home, this can be interpreted as not using more than N amount of memory for a group of isolated processes.
 
 ### Seccomp-bpf
-What if we wanted to prevent certain syscalls to be made from the container to the kernel? Apartment 121 should not have the rights to turn on the lights, could be the equivalent of telling a container that it has no rights to access the internet. Telling a container what its allowed to do and what not is defined in profiles. You can pass different profiles to different containers. The default profile for a Docker container can be viewed here in the Docker repository on Github, it blocks 44 syscalls out of the 300 available ones.
+What if we wanted to prevent certain syscalls to be made from the container to the kernel? Apartment 121 should not have the rights to turn on the lights, could be the equivalent of telling a container that it has no rights to access the internet. Telling a container what its allowed to do and what not is defined in profiles. You can pass different profiles to different containers. The default profile for a Docker container can be viewed [here](https://github.com/moby/moby/blob/master/profiles/seccomp/default.json) in the Docker repository on Github, it blocks 44 syscalls out of the 300 available ones.
 
 Seccomp uses the Berkeley Packet Filter program, this allows you to also setup custom filters. You can limit syscalls by providing conditions on how or when it should be limited when the syscall is made. The seccomp filters replace the syscalls with pointers to the Bpf program, which will perform the execution instead of the syscall.
 
