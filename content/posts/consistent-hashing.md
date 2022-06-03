@@ -1,6 +1,6 @@
 ---
 title: "Consistent Hashing"
-date: 2022-01-13T10:59:15+00:00
+date: 2022-06-03T10:59:15+00:00
 tags: ["System Design", "Distributed Systems"]
 ---
 
