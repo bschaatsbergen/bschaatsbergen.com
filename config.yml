@@ -71,7 +71,7 @@ params:
               url: tags
 
     homeInfoParams:
-        Title: "Minimize waste, optimize for joy and don't use a canon to kill a mosquito"
+        Title: "Minimize waste and optimize for joy"
         Content: >
             Bruno Schaatsbergen on architecture and development in the cloud.
 
