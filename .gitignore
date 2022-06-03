@@ -19,3 +19,5 @@ public/
 release/
 
 # Backup Files
+.DS_Store
+content/.DS_Store
