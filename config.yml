@@ -73,7 +73,7 @@ params:
     homeInfoParams:
         Title: "Minimize waste and optimize for joy"
         Content: >
-            Bruno Schaatsbergen on architecture and development in the cloud.
+            Bruno Schaatsbergen on containers, networking, databases and cloud architecture.
 
     socialIcons:
         - name: github
