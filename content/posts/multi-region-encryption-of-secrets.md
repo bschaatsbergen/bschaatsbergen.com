@@ -1,10 +1,9 @@
 ---
-title: "Global KMS keys and secrets in AWS"
+title: "Going global with KMS and Secrets Manager"
 date: 2022-01-23T12:19:55+01:00
 tags: ["Terraform", "AWS"]
-description: "Lets take a look at managing our KMS keys and secrets across multiple regions with Terraform."
 ---
-In this post I want to give you a brief introduction on how to deploy KMS keys and secrets in Secret Manager across multiple regions. We'll do so by making use of replication to minimize waste and prevent repeating ourselves.
+In this post I want to give you a brief introduction on how to deploy KMS keys and secrets in Secret Manager across multiple regions. We'll do so by making use of replication to minimize waste and prevent repetition.
 
 ## Multi-region KMS key
 
