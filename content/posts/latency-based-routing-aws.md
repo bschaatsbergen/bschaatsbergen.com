@@ -1,5 +1,5 @@
 ---
-title: "Latency based routing in AWS"
+title: "Lets talk about latency based routing in AWS"
 date: 2021-11-14T11:29:45+01:00
 tags: ["AWS", "Networking", "Availability"]
 description: Both Global Accelerator and Route 53 latency-based routing policies provide a nice way to efficiently and latency-friendly balance load between resources, but what's the difference and when should you use what?
