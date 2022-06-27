@@ -1,5 +1,5 @@
 ---
-title: "The lost art of writing Terraform modules"
+title: "The lost love for writing Terraform modules"
 date: 2022-06-26T11:10:11+11:00
 tags: ["terraform"]
 ---
